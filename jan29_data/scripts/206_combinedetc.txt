@@ -1,0 +1,47 @@
+#NB the combined continuum image is not very good; no more emission
+#seems to appear than in the TC image and it is dynamic range limited
+#(~1000), as is the TE continuum image I made using all 3 executions
+#of the continuum, possibly becaues of slight amp mis-scaling which
+#could be due to variability or to the less-good data sets. However,
+#the line images do seem to have good increased sensitivity!
+
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.alpha.error.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.alpha.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.image.tt0.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.tt0.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_12CO.image.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_12CO.image.image.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_12CO.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_13CO.image.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_13CO.image.image.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_13CO.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv0.image.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv0.image.image.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv0.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv1.image.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv1.image.image.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv1.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_29SiOv0.image.image.pbcor.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_29SiOv0.image.image.tgz
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_29SiOv0.image.pbcor.tgz
+
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.alpha.error.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.alpha.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_all_cont_1-1.image.image.tt0.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_12CO.image.image.pbcor.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_12CO.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_13CO.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_13CO.image.image.pbcor.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv0.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv0.image.image.pbcor.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv1.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_28SiOv1.image.image.pbcor.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_29SiOv0.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/All/Betelgeuse_allines_29SiOv0.image.image.pbcor.fits
+
+# Image made with no continuum subtraction for checking ; the spectral
+# profile seems identical but displaced, very slight difefrenrces
+# probably solely due to different masking as I did it interactively.
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_nocontsub_12CO.image.image.fits
+wget -c /scratch/almanas/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_nocontsub_12CO.image.image.tgz
+#(compare with Betelgeuse_TEtav_12CO.image.image.fits etc.)

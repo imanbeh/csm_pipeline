@@ -1,0 +1,175 @@
+Betelgeuse
+======
+wget's at end
+
+==============
+TC resolution ~0".4
+
+All images have two versions, with and without .pbcor, just one name
+given here for brevity
+
+** These are at the original position and flux scale, which may be
+   inacurate, and is certainly offset from TE, see below **
+
+# Continuum pre self-cal
+Betelgeuse_TC_cont.image.image   
+# Final with self-cal
+Betelgeuse_TC_contap2_wt.image.image.tt0
+
+# Lines with rest frequency set
+Betelgeuse_TC_12CO.image.image
+Betelgeuse_TC_13CO.image.image
+Betelgeuse_TC_29SiO.image.image
+
+# Images of each entire spw, in most cases ignor velocities. Freq is obs. centre
+Betelgeuse_TC_spw0.image.image 345802.8074  12CO 
+Betelgeuse_TC_spw1.image.image 345155.8348  SiO, SO2 
+Betelgeuse_TC_spw2.image.image 343196.1486  29SiO, SO2, SiO *NB reset look-up table, ch0 bad
+Betelgeuse_TC_spw3.image.image 330594.5788  13CO
+Betelgeuse_TC_spw4.image.image 332556.9470
+
+#######################################
+
+TE - no need for primary beam correction
+# pre-self-cal
+Betelgeuse_TE_cont.image.image
+# Final with self-cal
+Betelgeuse_TE_cont_ap1wt.image.image.tt0
+Betelgeuse_TE_cont_ap1wt.image.alpha
+Betelgeuse_TE_cont_ap1wt.image.alpha.error
+# NB, set scale e.g. -0.5 to 2.5 to view alpha (spec. index)
+
+Betelgeuse_TEtav_12CO.image.image
+Betelgeuse_TEtav_13CO.image.image
+
+# First or last channel bad, reset LUT to see lines. Much absorption.
+Betelgeuse_TEtav_spw0.image.image/
+Betelgeuse_TEtav_spw1.image.image/
+Betelgeuse_TEtav_spw2.image.image/
+Betelgeuse_TEtav_spw3.image.image/
+Betelgeuse_TEtav_spw4.image.image/
+
+#############################################
+Notes:
+TE: baselines 0.056~16 km
+TC: baselines 0.013~1.2 km
+
+Phase centre of observations 05h55m10.331s 07d24m25.571s
+
+The phase-referenced positions of the continuum are negligibly
+affected by self-cal.  For TC I fitted a 2D elliptical Gaussian to the
+image.  Fitting in the image plane to the TE image is tricky due to
+the hot spot, so I also took slices through in RA and Dec and measured
+the mid point of the 25 mJy contour, but the differences were
+negligible compared to the noise-based fitting error of 0.6 mas in
+each direction.
+
+Continuum
+TE obs 2015-11-06
+Gaussian fit 05:55:10.3315  +07:24:25.565
+Peak         81.8 +/- 2.4 mJy/beam 
+Integrated 608 +/- 20 mJy
+Very resolved, not deconvolved, size
+46.7+/-1.4 mas  x 42.8 +/- 1.2 mas  PA 66 +/- 14 deg
+
+
+TC S/N 914  
+obs 2016-08-16
+rms 0.36 mJy/bm, beam 0".19x0".16, pa -44deg
+Peak 329.1 +/- 1.7 mJy/beam
+Integrated 378.4 +/- 3.2 mJy in 
+deconvolved size 73+/-4 mas x 61+/-5 mas at PA 85+/-16 deg
+
+COMBINING
+
+Comparing 80-100 m uv distances, TC ~420 mJy, TE ~600
+** FLUX SCALE UNDERESTIMATED? calibrator flux densities consistently
+   20% lower than monitoring data interpolations. But another ~20%
+   maybe variability? (and at least 5% uncertaint in flux scale.
+
+Need to equalise fluxes in order to combine, even if partly 'wrong'
+i.e. variability is genuine.
+
+** Also shift TC position to align with TE
+Betelgeuse_TC_cont_shfxscl.ms for my reference
+
+TE+TC
+Combined weighted 1:1, 10 Mlambda uvtaper
+rms 0.27 mJy/bm, beam 0".043x0".038, pa 45deg
+but rather a bowl, nothing to see that is not in the individual images
+
+Combined images TO COME
+
+############################################
+
+TC
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_cont.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_cont.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_contap2_wt.image.image.tt0.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_contap2_wt.image.image.tt0.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_12CO.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_12CO.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_13CO.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_13CO.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_29SiO.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_29SiO.image.image.pbcor.tgz
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw0.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw0.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw1.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw1.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw2.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw2.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw3.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw3.image.image.pbcor.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw4.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw4.image.image.pbcor.tgz
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_cont.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_cont.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_contap2_wt.image.image.tt0.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_contap2_wt.image.image.tt0.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_12CO.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_12CO.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_13CO.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_13CO.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_29SiO.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_29SiO.image.image.pbcor.fits
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw0.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw0.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw1.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw1.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw2.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw2.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw3.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw3.image.image.pbcor.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw4.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TC_spw4.image.image.pbcor.fits
+
+# TE
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.image.tt0.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.image.tt0.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.alpha.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.alpha.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.alpha.error.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TE_cont_ap1wt.image.alpha.error.fits
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_12CO.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_12CO.image.image.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_13CO.image.image.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_13CO.image.image.fits
+
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw0.image.image/.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw0.image.image/.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw1.image.image/.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw2.image.image/.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw2.image.image/.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw2.image.image/.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw3.image.image/.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw3.image.image/.fits
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw4.image.image/.tgz
+wget -c http://almanas.jb.man.ac.uk/amsr/Betelgeuse/ALMA/Betelgeuse_TEtav_spw4.image.image/.fits
