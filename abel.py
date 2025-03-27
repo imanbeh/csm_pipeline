@@ -25,12 +25,14 @@ def do_abel(F,s):
     s = rad_1d
     '''
     dF_ds = np.gradient(F,s)
-    dF_ds = dF_ds[~np.isnan(dF_ds)]
-    s = s[:len(dF_ds)]
+    dF_ds = dF_ds[~np.isnan(dF_ds)] #this likely only works for this data bc it 
+    s = s[:len(dF_ds)] # only cuts off nans if theyre all at the end of image
     f_r = np.zeros(len(s))
+    r_arr = np.zeros(len(s))
 
     for i in range(len(s)-1):
         r = (s[i]+s[i+1])/2
+        r_arr[i] = r
 
         integ = np.trapz(dF_ds[i+1:]/ np.sqrt(s[s>r]**2-r**2),s[s>r])
 
@@ -39,7 +41,7 @@ def do_abel(F,s):
     # print(f_r)
 
     return f_r
-
+ 
 
 def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=0.45, suptitle = "1D Abel Transformation (g/cm3)", dent=False):
     '''
@@ -71,9 +73,10 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
 
     if(dent == True):
          m_e = 9.109e-28 # electron mass in g
-         plt.axhline(y=m_e*3e8, label = "Dent 2025",color = 'black', ls = ':')
-         plt.axhline(y=m_e*2e8, label = "Judge 1998", color = 'red', ls = '--')
-         plt.axhline(y=m_e*1e9, label = "Harper 2006", color = 'orange',ls = '-.')
+         m_p = 1.6726e-24
+         plt.axhline(y=(m_e+m_p)*3e8, label = "Dent 2025",color = 'black', ls = ':')
+         plt.axhline(y=(m_e+m_p)*2e8, label = "Judge 1998", color = 'red', ls = '--')
+         plt.axhline(y=(m_e+m_p)*1e9, label = "Harper 2006", color = 'orange',ls = '-.')
 
 
 

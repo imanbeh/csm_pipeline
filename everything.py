@@ -122,15 +122,19 @@ def full_analysis(hr,lr):
 def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Plots"):
 
     maxx=-minn #define x and y axis limits
-    titles = ['{res}" (Jy/arc2)'.format(res = np.round(info['hr']['kspatres'],3)),
-             '{res}" (Jy/arc2)'.format(res = np.round(info['lr']['kspatres'],3)),
-               "Conv After Reprojection (Jy/arc2)", "Circumstellar Material (Jy/arc2)", 
-          '{res}" Density (g/cm2)'.format(res = np.round(info['hr']['kspatres'],3)), '{res}" (g/cm2)'.format(res = np.round(info['lr']['kspatres'],3)), "HR Conv Density (g/cm2)", "CSM Density (g/cm2)"]
+    titles = ['{res}" Intensity (Jy/arc2)'.format(res = np.round(info['hr']['kspatres'],3)),
+             '{res}" Intensity (Jy/arc2)'.format(res = np.round(info['lr']['kspatres'],3)),
+               '{res}" After Reprojection Intensity (Jy/arc2)'.format(res = np.round(info['hr']['kspatres'],3)), 
+               "Circumstellar Material Intensity (Jy/arc2)", 
+          '{res}" Density (g/cm2)'.format(res = np.round(info['hr']['kspatres'],3)), 
+          '{res}" Density (g/cm2)'.format(res = np.round(info['lr']['kspatres'],3)), 
+          '{res}" After Reprojection Density (g/cm2)'.format(res = np.round(info['hr']['kspatres'],3)), 
+          "Circumstellar Material Density (g/cm2)"]
     
     title = ['hr','lr','reproj','csm', 'hr_dens','lr_dens', 'reproj_dens','csm_dens']
     
 
-    figure,axs = plt.subplots(nrows = 2, ncols=4, figsize = (15,6))#, subplot_kw={'projection': wcs})
+    figure,axs = plt.subplots(nrows = 4, ncols=2, figsize = (10,16))#, subplot_kw={'projection': wcs})
     figure.suptitle(suptitle, fontsize = 18, y=1.01)
 
     for i,ax in zip(range(len(data)), axs.ravel()):
@@ -153,8 +157,8 @@ def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Pl
         ax.set_ylim(minn, maxx)
 
         figure.colorbar(im,ax=ax)
-        ax.set_xlabel("Radius (arc)")
-        ax.set_ylabel("Radius (arc)")
+        ax.set_xlabel("Radius (arc)" , size = 14)
+        ax.set_ylabel("Radius (arc)", size = 14)
 
     figure.tight_layout(pad = 1)
     plt.show()
@@ -222,13 +226,11 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     plot 1d density and intensity functions.
     can select plot x and y limits. default values inputted otherwise
     '''
-    lowcolor = 'steelblue'
-    highcolor='crimson'
 
 
     plt.rcParams["font.family"] = "times"
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = [14,4])
-    fig.suptitle(suptitle)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize = [8,11])
+    fig.suptitle(suptitle, size= '25')
 
     title = ['hr','lr','reproj','csm', 'hr_dens','lr_dens', 'reproj_dens','csm_dens']
     labels = ['{res}"'.format(res = np.round(info['hr']['kspatres'],3)),
@@ -260,13 +262,16 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     ax2.set_ylim(ax2_ymin, ax2_ymax)
 
     ax1.semilogy()
+    ax1.tick_params(direction = 'in')
     ax2.semilogy()
-    ax1.set_title("1-D Radial Intensity Comparison")
-    ax2.set_title("1-D Radial Density Comaprison")
-    ax1.set_xlabel('Radius (arc)')
-    ax2.set_xlabel('Radius (arc)')
-    ax1.set_ylabel('Intensity (Jy/arc2)')
-    ax2.set_ylabel('Density (g/cm2)')
+    ax2.tick_params(direction = 'in')
+
+    ax1.set_title("Radial Intensity",size=18)
+    ax2.set_title("Radial Density",size=18)
+    ax1.set_xlabel('Radius (arc)',size=15)
+    ax2.set_xlabel('Radius (arc)',size=15)
+    ax1.set_ylabel('Intensity (Jy/arc2)',size=15)
+    ax2.set_ylabel('Density (g/cm2)',size=15)
 
     fig.show()
 
