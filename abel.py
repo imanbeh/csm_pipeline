@@ -74,9 +74,9 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
     if(dent == True):
          m_e = 9.109e-28 # electron mass in g
          m_p = 1.6726e-24
-         plt.axhline(y=(m_e+m_p)*3e8, label = "Dent 2025",color = 'black', ls = ':')
-         plt.axhline(y=(m_e+m_p)*2e8, label = "Judge 1998", color = 'red', ls = '--')
-         plt.axhline(y=(m_e+m_p)*1e9, label = "Harper 2006", color = 'orange',ls = '-.')
+         plt.axhline(y=(m_e+m_p)*3e8/(0.7), label = "Dent 2025",color = 'black', ls = ':')
+         plt.axhline(y=(m_e+m_p)*2e8/(0.7), label = "Judge 1998", color = 'red', ls = '--')
+         plt.axhline(y=(m_e+m_p)*1e9/(0.7), label = "Harper 2006", color = 'orange',ls = '-.')
 
 
 
