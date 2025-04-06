@@ -34,7 +34,6 @@ Figures for thesis!
 
 ___________________________________________________________________________________
 
-jan29_data
-data I used for this study
+The data used in this notebook is not public. However, this pipeline will still be usable with your choice ALMA data.
 
 ___________________________________________________________________________________
