@@ -18,7 +18,7 @@ puts important info about each resolution dataset in a table
 
 ___________________________________________________________________________________
 
-abel.py
+abel.py \
 plotting and parsing code for my specific setup \
 do_abel takes in a radial profile of surface density, radius at each point in the radial profile, and the background median. \
 returns radial profile of volumetric density
