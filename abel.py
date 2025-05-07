@@ -8,22 +8,24 @@ from astropy import units as u
 from matplotlib import pyplot as plt
 
 
-def all_abel(data,rad):
+def all_abel(data,rad,info):
     titles = list(data.keys())
     f_rs = {}
 
     for t in titles:
-        f_rs[t] = do_abel(data[t].value,rad[t]['pc_1d'].to(u.cm).value)
+        f_rs[t] = do_abel(data[t].value,rad[t]['pc_1d'].to(u.cm).value,info[t]['median_dens'])
 
     return f_rs
 
 
 
-def do_abel(F,s):
+def do_abel(F,s,med):
     '''
-    F = profile_1d
-    s = rad_1d
+    F = radial profile of surface density
+    s = radii corresponding with radial profile
+    med = background median- sets all neg values in F array to bkg median
     '''
+    F[F<0] = med
     dF_ds = np.gradient(F,s)
     dF_ds = dF_ds[~np.isnan(dF_ds)] #this likely only works for this data bc it 
     s = s[:len(dF_ds)] # only cuts off nans if theyre all at the end of image

@@ -235,7 +235,8 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     title = ['hr','lr','reproj','csm', 'hr_dens','lr_dens', 'reproj_dens','csm_dens']
     labels = ['{res}"'.format(res = np.round(info['hr']['kspatres'],3)),
              '{res}"'.format(res = np.round(info['lr']['kspatres'],3)),
-               "reproj", "csm"]    
+            'Reprojected {res}"'.format(res = np.round(info['lr']['kspatres'],3)),
+            "CSM"]    
     
 
     c=0
@@ -262,8 +263,14 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     ax2.set_ylim(ax2_ymin, ax2_ymax)
 
     ax1.semilogy()
-    ax1.tick_params(direction = 'in')
+    
+    ax1.yaxis.set_ticks_position('both')
+    ax2.yaxis.set_ticks_position('both')
+    ax1.xaxis.set_ticks_position('both')
+    ax2.xaxis.set_ticks_position('both')
+
     ax2.semilogy()
+    ax1.tick_params(direction = 'in')
     ax2.tick_params(direction = 'in')
 
     ax1.set_title("Radial Intensity",size=18)
@@ -284,12 +291,13 @@ def plot_1d_skip(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, a
 
 
     plt.rcParams["font.family"] = "times"
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = [14,4])
-    fig.suptitle(suptitle)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize = [8,11])
+    fig.suptitle(suptitle,size= 25)
 
     title = ['lr','reproj','csm', 'lr_dens', 'reproj_dens','csm_dens']
     labels = ['{res}"'.format(res = np.round(info['lr']['kspatres'],3)),
-               "reproj", "csm"]    
+              'Reprojected {res}"'.format(res = np.round(info['lr']['kspatres'],3)),
+               "CSM"]    
 
 
 
@@ -318,6 +326,18 @@ def plot_1d_skip(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, a
 
     ax1.semilogy()
     ax2.semilogy()
+
+    
+
+    ax1.yaxis.set_ticks_position('both')
+    ax2.yaxis.set_ticks_position('both')
+    ax1.xaxis.set_ticks_position('both')
+    ax2.xaxis.set_ticks_position('both')
+
+    ax1.tick_params(direction = 'in')
+    ax2.tick_params(direction = 'in')
+
+
     ax1.set_title("1-D Radial Intensity Comparison")
     ax2.set_title("1-D Radial Density Comaprison")
     ax1.set_xlabel('Radius (arc)')

@@ -12,7 +12,7 @@ quantity_support()
 r_betelgeuse = 29.50*1e-3*u.arcsec
 beta= 1.4
 k160 = 8.8*u.cm**2 *u.g**-1
-stellar_radius_hr_pc = (0.035*168/206265)*u.parsec
+stellar_radius_hr_pc = (0.0295*168/206265)*u.parsec
 rhr = stellar_radius_hr_pc #pc hr radius
 lmda = 887.0*u.um #microns
 lmda_cm = 0.0887*u.cm
@@ -57,7 +57,7 @@ def temp(Rarr, pr=False):
     Tin = 1300.0*u.K
     Rin = 3* rhr
     Rarr_shape = np.shape(Rarr)
-    t_cap = 3000*u.K
+    t_cap = 3600*u.K
 
     if len(Rarr_shape) == 1: #1D
         T = [0.0*u.K]*len(Rarr)
