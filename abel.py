@@ -50,8 +50,6 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
     plot 1d density and intensity functions.
     can select plot x and y limits. default values inputted otherwise
     '''
-    lowcolor = 'steelblue'
-    highcolor='crimson'
 
 
     plt.rcParams["font.family"] = "times"
