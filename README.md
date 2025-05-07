@@ -3,17 +3,17 @@ MS thesis on calculating the circumstellar material distribution of a star of a 
 
 ___________________________________________________________________________________
 
-template.ipynb
+template.ipynb \
 Use the template notebook with your choice high and low resolution files. Download all .py files in order for it to run.
 
 ___________________________________________________________________________________
 
-Lowhigh, medhigh and lowmed.ipynb
+Lowhigh, medhigh and lowmed.ipynb \
 all document trials of different comparisons between different resolution datasets.
 
 ___________________________________________________________________________________
 
-pandas.ipynb
+pandas.ipynb \
 puts important info about each resolution dataset in a table
 
 ___________________________________________________________________________________
@@ -26,7 +26,7 @@ returns radial profile of volumetric density
 
 ___________________________________________________________________________________
 
-DATA VALIDATION
+DATA VALIDATION \
 blanktest.ipynb
 data validation for radial profile and inverse abel transform 
 For radial profile:
