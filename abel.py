@@ -59,7 +59,8 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
     title = ['hr','lr','reproj','csm']
     labels = ['{res}"'.format(res = np.round(info['hr']['kspatres'],3)),
              '{res}"'.format(res = np.round(info['lr']['kspatres'],3)),
-               "reproj", "csm"]    
+             'Reprojected {res}"'.format(res = np.round(info['hr']['kspatres'],3)),
+             "CSM"]    
     
     color = ['C6','C0','C2','C4']
 
