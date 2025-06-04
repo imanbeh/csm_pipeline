@@ -157,8 +157,9 @@ def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Pl
         ax.set_ylim(minn, maxx)
 
         figure.colorbar(im,ax=ax)
-        ax.set_xlabel("Radius (arc)" , size = 14)
-        ax.set_ylabel("Radius (arc)", size = 14)
+        ax.set_xlabel(r'$\Delta$ RA (arc)' , size = 14)
+        ax.set_ylabel(r'$\Delta$ DEC (arc)' , size = 14)
+
 
     figure.tight_layout(pad = 1)
     plt.show()
