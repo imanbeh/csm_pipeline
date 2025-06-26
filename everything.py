@@ -122,14 +122,14 @@ def full_analysis(hr,lr):
 def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Plots"):
 
     maxx=-minn #define x and y axis limits
-    titles = ['{res}" Intensity (Jy/arc2)'.format(res = np.round(info['hr']['kspatres'],3)),
-             '{res}" Intensity (Jy/arc2)'.format(res = np.round(info['lr']['kspatres'],3)),
-               '{res}" After Reprojection Intensity (Jy/arc2)'.format(res = np.round(info['hr']['kspatres'],3)), 
-               "Circumstellar Material Intensity (Jy/arc2)", 
-          '{res}" Density (g/cm2)'.format(res = np.round(info['hr']['kspatres'],3)), 
-          '{res}" Density (g/cm2)'.format(res = np.round(info['lr']['kspatres'],3)), 
-          '{res}" After Reprojection Density (g/cm2)'.format(res = np.round(info['hr']['kspatres'],3)), 
-          "Circumstellar Material Density (g/cm2)"]
+    titles = ['{res}"'.format(res = np.round(info['hr']['kspatres'],3)) + r' Intensity (Jy arc$^{-2}$)',
+              '{res}"'.format(res = np.round(info['lr']['kspatres'],3)) + r' Intensity (Jy arc$^{-2}$)',
+              '{res}"'.format(res = np.round(info['hr']['kspatres'],3)) + r' After Reprojection Intensity (Jy arc$^{-2}$)',
+               r'Circumstellar Material Intensity (Jy arc$^{-2}$)', 
+          '{res}"'.format(res = np.round(info['hr']['kspatres'],3)) + r' Density (g cm$^{-2}$)', 
+          '{res}"'.format(res = np.round(info['lr']['kspatres'],3)) + r' Density (g cm$^{-2}$)', 
+          '{res}"'.format(res = np.round(info['hr']['kspatres'],3)) + r' After Reprojection Density (g cm$^{-2}$)', 
+          r'Circumstellar Material Density (g cm$^{-2}$)']
     
     title = ['hr','lr','reproj','csm', 'hr_dens','lr_dens', 'reproj_dens','csm_dens']
     
@@ -236,7 +236,7 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     title = ['hr','lr','reproj','csm', 'hr_dens','lr_dens', 'reproj_dens','csm_dens']
     labels = ['{res}"'.format(res = np.round(info['hr']['kspatres'],3)),
              '{res}"'.format(res = np.round(info['lr']['kspatres'],3)),
-            'Reprojected {res}"'.format(res = np.round(info['lr']['kspatres'],3)),
+            'Reprojected {res}"'.format(res = np.round(info['hr']['kspatres'],3)),
             "CSM"]    
     
 
@@ -297,7 +297,7 @@ def plot_1d_skip(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, a
 
     title = ['lr','reproj','csm', 'lr_dens', 'reproj_dens','csm_dens']
     labels = ['{res}"'.format(res = np.round(info['lr']['kspatres'],3)),
-              'Reprojected {res}"'.format(res = np.round(info['lr']['kspatres'],3)),
+              'Reprojected {res}"'.format(res = np.round(info['hr']['kspatres'],3)),
                "CSM"]    
 
 
