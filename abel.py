@@ -90,6 +90,6 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
     ax.semilogy()
 #     ax.set_title("1-D Density (g/cm3)")
     ax.set_xlabel('Radius (arc)')
-    ax.set_ylabel('Density (g/cm3)')
+    ax.set_ylabel(r'Density (g cm$^{-3})')
 
     fig.show()
