@@ -61,7 +61,7 @@ def full_analysis(hr,lr):
 
 
             temp = data[title[i]]['jy_arc2'][0,0,...].copy()
-            temp[np.isnan(temp)]=(10*np.std(temp))
+            temp[np.isnan(temp)]=(3*np.std(temp))
             mask = np.abs(temp-np.median(temp))>(3*np.std(temp))
             info[title[i]]['mean'], info[title[i]]['median'], info[title[i]]['std'] = sigma_clipped_stats(data[title[i]]['jy_arc2'][0,0,...], sigma = sig,mask=mask)
 
@@ -77,7 +77,7 @@ def full_analysis(hr,lr):
             # print(np.any(np.isnan(data[title[i]]['jy_arc2_norm'])))
 
             temp = data[title[i]]['jy_arc2_norm'][0,0,...].copy()
-            temp[np.isnan(temp)]=(10*np.std(temp))
+            temp[np.isnan(temp)]=(3*np.std(temp))
             mask = np.abs(np.median(temp)-temp)>(3*np.std(temp))
             
             mask[np.isnan(mask)]=True
@@ -99,7 +99,7 @@ def full_analysis(hr,lr):
             # print(np.any(np.isnan(data[title[i]]['jy_arc2'])))
             
             temp = data[title[i]]['jy_arc2'].copy()
-            temp[np.isnan(temp)]=(10*np.std(temp))
+            temp[np.isnan(temp)]=(3*np.std(temp))
             mask = np.abs(np.median(temp)-temp)>(3*np.std(temp))
             
             info[title[i]]['mean'], info[title[i]]['median'], info[title[i]]['std'] = sigma_clipped_stats(data[title[i]]['jy_arc2'], sigma = sig,mask=mask)
