@@ -174,8 +174,7 @@ def plot_1d_err(info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ymax=1e4,ax2_ymax=1
     plot 1d density and intensity functions.
     can select plot x and y limits. default values inputted otherwise
     '''
-    lowcolor = 'steelblue'
-    highcolor='crimson'
+
 
 
     plt.rcParams["font.family"] = "times"
@@ -216,8 +215,8 @@ def plot_1d_err(info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ymax=1e4,ax2_ymax=1
     ax2.set_title("1-D Radial Density Comaprison")
     ax1.set_xlabel('Radius (arc)')
     ax2.set_xlabel('Radius (arc)')
-    ax1.set_ylabel('Intensity Error (Jy/arc2)')
-    ax2.set_ylabel('Density Error (g/cm2)')
+    ax1.set_ylabel(r'Intensity Error (Jy arc$^{-2}$)')
+    ax2.set_ylabel(r'Density Error (g cm$^{-2}$')
 
     fig.show()
 
@@ -274,12 +273,13 @@ def plot_1d(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ym
     ax1.tick_params(direction = 'in')
     ax2.tick_params(direction = 'in')
 
+
     ax1.set_title("Radial Intensity",size=18)
     ax2.set_title("Radial Density",size=18)
     ax1.set_xlabel('Radius (arc)',size=15)
     ax2.set_xlabel('Radius (arc)',size=15)
-    ax1.set_ylabel('Intensity (Jy/arc2)',size=15)
-    ax2.set_ylabel('Density (g/cm2)',size=15)
+    ax1.set_ylabel(r'Intensity (Jy arc$^{-2}$)',size=15)
+    ax2.set_ylabel(r'Density (g cm$^{-2}$)',size=15)
 
     fig.show()
 
@@ -343,7 +343,7 @@ def plot_1d_skip(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, a
     ax2.set_title("1-D Radial Density Comaprison")
     ax1.set_xlabel('Radius (arc)')
     ax2.set_xlabel('Radius (arc)')
-    ax1.set_ylabel('Intensity (Jy/arc2)')
-    ax2.set_ylabel('Density (g/cm2)')
+    ax1.set_ylabel(r'Intensity (Jy arc$^{-2}$)',size=15)
+    ax2.set_ylabel(r'Density (g cm$^{-2}$)',size=15)
 
     fig.show()
