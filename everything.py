@@ -168,7 +168,7 @@ def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Pl
 
 
 
-color = ['C6','C0','C2','C4']
+color = ['C6','C0','C2','black'] #C4']
 def plot_1d_err(info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, ax1_ymax=1e4,ax2_ymax=1e3,xmin=0,xmax=0.45, suptitle = "Standard Deviations"):
     '''
     plot 1d density and intensity functions.

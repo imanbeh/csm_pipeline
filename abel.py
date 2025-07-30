@@ -62,7 +62,7 @@ def plot_1d_abel(data_abel_1d,info,radius,ax_ymin=1e-2, ax_ymax=1e4,xmin=0,xmax=
              'Reprojected {res}"'.format(res = np.round(info['hr']['kspatres'],3)),
              "CSM"]    
     
-    color = ['C6','C0','C2','C4']
+    color = ['C6','C0','C2','black']
 
     for j in range(len(title)):
 
