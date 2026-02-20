@@ -51,63 +51,62 @@ def full_analysis(hr,lr):
     data_dens_2d = {}
 
     for i in range(len(data)):
-        sig = 1
+        sig = 1 # for sigma_clipped_stats
+        star_sig = 3 #for masking out star
+
         info[title[i]]['cmap'] = cmr.flamingo
 
-
+        # high and low resolution data
         if i<2:
-            # print(title[i])
-            # print(np.any(np.isnan(data[title[i]]['jy_arc2'][0,0,...])))
-
-
             temp = data[title[i]]['jy_arc2'][0,0,...].copy()
-            temp[np.isnan(temp)]=(3*np.std(temp))
-            mask = np.abs(temp-np.median(temp))>(3*np.std(temp))
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
+            #should I be masking out the negative values as well in the bkg calculations?
             info[title[i]]['mean'], info[title[i]]['median'], info[title[i]]['std'] = sigma_clipped_stats(data[title[i]]['jy_arc2'][0,0,...], sigma = sig,mask=mask)
 
             radius[title[i]],data_1d[title[i]],info[title[i]]['error'] = radial_read(data[title[i]]['jy_arc2'][0,0,...],info[title[i]])
             data_dens_2d[title[i]] = density_model(data[title[i]]['jy_arc2'][0,0,...]*u.Jy/u.arcsec**2, radius[title[i]]['pc_2d'])
 
             ### GATHERING MEDIAN BACKGROUND DATA
+            #making new mask for background calculation of density field
+            temp = data_dens_2d[title[i]].copy()
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
             info[title[i]]['mean_dens'], info[title[i]]['median_dens'], info[title[i]]['std_dens'] = sigma_clipped_stats(data_dens_2d[title[i]], sigma = sig,mask = mask)
 
-
+        # reprojected normalized hr
         elif i==2:
             # print(title[i])
             # print(np.any(np.isnan(data[title[i]]['jy_arc2_norm'])))
 
             temp = data[title[i]]['jy_arc2_norm'][0,0,...].copy()
-            temp[np.isnan(temp)]=(3*np.std(temp))
-            mask = np.abs(np.median(temp)-temp)>(3*np.std(temp))
-            
-            mask[np.isnan(mask)]=True
-            #mask = data[title[i]]['jy_arc2_norm'][0,0,...]>(3*np.std(data[title[i]]['jy_arc2_norm'][0,0,...]))
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
             info[title[i]]['mean'], info[title[i]]['median'], info[title[i]]['std'] = sigma_clipped_stats(data[title[i]]['jy_arc2_norm'][0,0,...], sigma = sig,mask=mask)
 
             radius[title[i]],data_1d[title[i]],info[title[i]]['error'] = radial_read(data[title[i]]['jy_arc2_norm'][0,0,...],info[title[i]])
             data_dens_2d[title[i]] = density_model(data[title[i]]['jy_arc2_norm'][0,0,...]*u.Jy/u.arcsec**2, radius[title[i]]['pc_2d'])
 
             ### GATHERING MEDIAN BACKGROUND DATA
+            temp = data_dens_2d[title[i]].copy()
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
             info[title[i]]['mean_dens'], info[title[i]]['median_dens'], info[title[i]]['std_dens'] = sigma_clipped_stats(data_dens_2d[title[i]], sigma = sig,mask=mask)
 
+        # csm, hr_add, and lr_add
         else:
-            # temp = data[title[i]]['jy_arc2']
-            # temp[np.isnan(temp)]=0
-            # mask = temp>(3*np.std(temp))
-            ##mask = data[title[i]]['jy_arc2']>(3*np.std(data[title[i]]['jy_arc2']))
-            # print(title[i])
-            # print(np.any(np.isnan(data[title[i]]['jy_arc2'])))
-            
             temp = data[title[i]]['jy_arc2'].copy()
-            temp[np.isnan(temp)]=(3*np.std(temp))
-            mask = np.abs(np.median(temp)-temp)>(3*np.std(temp))
-            
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
             info[title[i]]['mean'], info[title[i]]['median'], info[title[i]]['std'] = sigma_clipped_stats(data[title[i]]['jy_arc2'], sigma = sig,mask=mask)
 
             radius[title[i]],data_1d[title[i]],info[title[i]]['error'] = radial_read(data[title[i]]['jy_arc2'],info[title[i]])
             data_dens_2d[title[i]] = density_model(data[title[i]]['jy_arc2']*u.Jy/u.arcsec**2, radius[title[i]]['pc_2d'])
 
             ### GATHERING MEDIAN BACKGROUND DATA
+            temp = data_dens_2d[title[i]].copy()
+            mask = mask_maker(temp, star_sig)
+            #calculate background statistics with star masked out
             info[title[i]]['mean_dens'], info[title[i]]['median_dens'], info[title[i]]['std_dens'] = sigma_clipped_stats(data_dens_2d[title[i]], sigma =sig,mask=mask)
 
         data_dens_1d[title[i]]= density_model(data_1d[title[i]],radius[title[i]]['pc_1d'])
@@ -117,6 +116,19 @@ def full_analysis(hr,lr):
     
 
     return data, data_1d, radius, data_dens_1d, data_dens_2d, data_plot, info
+
+def mask_maker(temp, num_sigma):
+    '''
+    temp: dataset to calculate mask on
+    num_sigma: number of standard deviations from median to mask out 
+    '''
+    # calculate mask from background subtracted data using num_sigma stdevs
+    mask = np.abs(temp-np.nanmedian(temp))>(num_sigma*np.nanstd(temp))
+
+    #cautionary nan masking step
+    mask[np.isnan(mask)]=True
+
+    return mask
 
 
 def plot_2d(data, info, vminmax, minn=-0.3, suptitle = "Intensity and Density Plots"):
