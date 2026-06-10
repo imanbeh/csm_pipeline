@@ -82,7 +82,7 @@ def a_d(drhr, dlr,info_reproj,info_lr):
     pos=(int(pos1[0]),int(pos1[1]))
 
     # convert new datasets to diff units
-    csm_jy_pixel = dlr_add-drhr_add
+    csm_jy_pixel = dlr_add-drhr_add 
     csm_jy_arc = csm_jy_pixel/info_lr['beam_solid_angle'].to(u.arcsec**2).value
 
     data_lr_centered_add_jy_arc2 = dlr_add/info_lr['beam_solid_angle'].to(u.arcsec**2).value
