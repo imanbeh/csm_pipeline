@@ -27,7 +27,7 @@ def make_spline(image):
 
 #X,Y = np.meshgrid(x,y)
 
-def lines(image, cx,cy, n_lines, n_pts, plot=True):
+def ray_calculation(image, cx,cy, n_lines, n_pts, plot=True):
     '''
     returns n_lines rays of n_pts long radial profiles, and corresponding array of cartesian coordinates
 
