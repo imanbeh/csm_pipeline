@@ -359,3 +359,35 @@ def plot_1d_skip(data_1d,data_dens_1d,info,radius,ax1_ymin=1e-2,ax2_ymin=1e-3, a
     ax2.set_ylabel(r'Density (g cm$^{-2}$)',size=15)
 
     fig.show()
+
+
+def plot_square(data,info, suptitle,vminmax, minn=-.4, dense = False):
+    maxx= -minn
+
+    figure,ax = plt.subplots(nrows = 1, ncols=1, figsize = (5,4))#, subplot_kw={'projection': wcs})
+    figure.suptitle(suptitle, fontsize = 18, y=1.01)
+
+    xaxis = range(data.shape[0])*info['pix_size_arcsec']-((info['position'][0])*info['pix_size_arcsec'])
+    yaxis = range(data.shape[1])*info['pix_size_arcsec']-((info['position'][1])*info['pix_size_arcsec'])
+
+
+    im = ax.pcolormesh(yaxis,xaxis,data, cmap='gist_heat',shading="gouraud", vmin = vminmax[0], vmax = vminmax[1])
+    # ax.plot((info['position'][1])*info['pix_size_arcsec']-((info['position'][1])*info['pix_size_arcsec']),
+    #         (info['position'][0])*info['pix_size_arcsec']-((info['position'][0])*info['pix_size_arcsec']),'rx')
+    # ax.plot(0,0,'rx')
+
+    ax.set_xlim(minn, maxx)
+    ax.set_ylim(minn, maxx)
+    # plt.plot(476*info['pix_size_arcsec']-((info['position'][0])*info['pix_size_arcsec']),
+    #          509*info['pix_size_arcsec']-((info['position'][1])*info['pix_size_arcsec']),'bx')
+    #print(476*info['pix_size_arcsec']-((info['position'][0])*info['pix_size_arcsec']),
+    #         509*info['pix_size_arcsec']-((info['position'][1])*info['pix_size_arcsec']))
+    
+    if(dense==False):
+        figure.colorbar(im,ax=ax, label=r'Jy arc$^{-2}$')
+    elif (dense == True):
+        figure.colorbar(im,ax=ax, label=r'g cm$^{-2}$')
+
+    ax.set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+    ax.set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
+
