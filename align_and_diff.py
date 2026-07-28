@@ -79,6 +79,7 @@ def a_d(drhr, dlr,info_reproj,info_lr):
     # print("drhr_add shape: ", drhr_add.shape)
 
     pos1 = np.where(drhr_add==np.nanmax(drhr_add))
+    print(pos1)
     pos=(int(pos1[0]),int(pos1[1]))
 
     # convert new datasets to diff units
