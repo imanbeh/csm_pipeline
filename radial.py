@@ -5,8 +5,6 @@
 import numpy as np
 from astropy.io import fits
 from matplotlib import pyplot as plt
-import cmasher as cmr
-from astropy.io import fits
 from astropy.visualization import quantity_support
 quantity_support()  
 
