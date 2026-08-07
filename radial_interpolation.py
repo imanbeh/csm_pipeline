@@ -85,7 +85,7 @@ def ray_calculation(image, cx,cy, n_lines, n_pts, plot=True):
 def plot_interp_grid(X,Y,image,x_vals,y_vals,interp_star):
 
     fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(8,4))
-    ax[0].pcolormesh(X, Y, image.value)
+    ax[0].pcolormesh(X, Y, image)
     ax[0].set_title("Original Image")
     ax[1].pcolormesh(x_vals, y_vals, interp_star)
     ax[1].set_title("Interpolated Image")
