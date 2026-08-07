@@ -23,7 +23,7 @@ def density_model(Sarr, Rarr, pr = False):
     '''
     turns intensity into density. 
     lmda = wavelength
-    Sarr = intensity array profile
+    Sarr = intensity array profile in jy/arc2
     Rarr = radii
     p = print. do you want to print Sarr kpa and B before printing?
     '''
