@@ -8,6 +8,8 @@ from matplotlib import pyplot as plt
 from astropy import units as u
 from scipy.interpolate import RectBivariateSpline
 
+print("hello")
+
 def radial_interp(image, cx,cy, n_lines, n_pts, plot=True):
     '''
     runs radial interpolation sequence
@@ -27,7 +29,6 @@ def make_spline(x,y,image):
     makes RectBivariateSpline for your 2d dataset 
     returns spline
     '''
-
     spline = RectBivariateSpline(x,y,image) # making function to interpolate starry array
 
     return spline
