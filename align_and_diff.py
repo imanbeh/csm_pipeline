@@ -80,7 +80,11 @@ def a_d(drhr, dlr,info_reproj,info_lr):
 
     pos1 = np.where(drhr_add==np.nanmax(drhr_add))
     print(pos1)
+<<<<<<< HEAD
     #has to be this way [][] for some reason
+=======
+    #has to be this for some reason
+>>>>>>> 9cc025e83ae2e31bb8ee023a129f6d55d4651a53
     pos=(int(pos1[0][0]),int(pos1[1][0]))
 
     # convert new datasets to diff units
