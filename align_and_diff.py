@@ -80,7 +80,8 @@ def a_d(drhr, dlr,info_reproj,info_lr):
 
     pos1 = np.where(drhr_add==np.nanmax(drhr_add))
     print(pos1)
-    pos=(int(pos1[0]),int(pos1[1]))
+    #has to be this way [][] for some reason
+    pos=(int(pos1[0][0]),int(pos1[1][0]))
 
     # convert new datasets to diff units
     csm_jy_pixel = dlr_add-drhr_add 
