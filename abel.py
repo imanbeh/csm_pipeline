@@ -37,7 +37,7 @@ def do_abel(F,s,med):
         r = (s[i]+s[i+1])/2
         r_arr[i] = r
 
-        integ = np.trapz(dF_ds[i+1:]/ np.sqrt(s[s>r]**2-r**2),s[s>r])
+        integ = np.trapezoid(dF_ds[i+1:]/ np.sqrt(s[s>r]**2-r**2),s[s>r])
 
         f_r[i]= (-1/np.pi)* integ # integrate from r to highest radial value
 

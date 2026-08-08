@@ -8,9 +8,14 @@ from matplotlib import pyplot as plt
 from astropy import units as u
 from scipy.interpolate import RectBivariateSpline
 
-print("hello")
+v_max=0.02
+pix_size_arc = 0*u.arcsec
+cx=0
+cy=0
+plot=True
+print("hello again")
 
-def radial_interp(image, cx,cy, n_lines, n_pts, plot=True):
+def radial_interp(image, center_x,center_y, n_lines, n_pts,pix_arc, plot_bool,vmax):
     '''
     runs radial interpolation sequence
     plots resulting comparison
@@ -21,7 +26,19 @@ def radial_interp(image, cx,cy, n_lines, n_pts, plot=True):
     y_vals: y value grid where ... y values along a given ray
     interp_star: grad where rows correspond to interpolated values along a given ray
     '''
-    x_vals,y_vals,interp_star = ray_calculation(image, cx,cy, n_lines, n_pts, plot=True)
+    global pix_size_arc
+    global cx
+    global cy
+    global plot
+    global v_max
+
+    pix_size_arc = pix_arc
+    cx=center_x
+    cy=center_y
+    plot=plot_bool # would you like a plot to be outputted? boolean
+    v_max = vmax # upper colorbar limit
+
+    x_vals,y_vals,interp_star = ray_calculation(image, n_lines, n_pts)
     return x_vals,y_vals,interp_star
 
 def make_spline(x,y,image):
@@ -29,24 +46,23 @@ def make_spline(x,y,image):
     makes RectBivariateSpline for your 2d dataset 
     returns spline
     '''
-    spline = RectBivariateSpline(x,y,image) # making function to interpolate starry array
-
+    #spline = RectBivariateSpline(x,y,image.T) # making function to interpolate starry array
+    spline = RectBivariateSpline(x,y,image.T)
+    print(cx,cy,pix_size_arc,plot)
     return spline
 
-def ray_calculation(image, cx,cy, n_lines, n_pts, plot=True):
+def ray_calculation(image, n_lines, n_pts):
     '''
     returns n_lines rays of n_pts long radial profiles, and corresponding array of cartesian coordinates
 
     image = 2d array image to be interpolated
-    cx = x center
-    cy = y center
     n_lines = number of rays
     n_pts = number of points along rays
     plot = booleon T/F to plot resulting interpolated grid
 
     '''
 
-    psis = np.linspace(0,2*np.pi, n_lines, endpoint=False)
+    psis = np.linspace(0,2*np.pi, n_lines, endpoint=True)
     rs = np.linspace(0,cx+1,n_pts)
 
     # get x and y grid
@@ -85,15 +101,28 @@ def ray_calculation(image, cx,cy, n_lines, n_pts, plot=True):
 def plot_interp_grid(X,Y,image,x_vals,y_vals,interp_star):
 
     fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(8,4))
-    ax[0].pcolormesh(X, Y, image.value)
+    X_axis = X*pix_size_arc.value-(cx*pix_size_arc.value)
+    Y_axis = Y*pix_size_arc.value-(cy*pix_size_arc.value)
+    ax[0].pcolormesh(X_axis, Y_axis, image,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = v_max)
+    # ax[0].pcolormesh(X, Y, image,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = 0.02)
     ax[0].set_title("Original Image")
-    ax[1].pcolormesh(x_vals, y_vals, interp_star)
+
+    x_axis = x_vals*pix_size_arc.value-(cx*pix_size_arc.value)
+    y_axis = y_vals*pix_size_arc.value-(cy*pix_size_arc.value)
+    ax[1].pcolormesh(x_axis, y_axis, interp_star,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = v_max)
+    # ax[1].pcolormesh(x_vals, y_vals, interp_star,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = 0.02)
     ax[1].set_title("Interpolated Image")
+
+    rnge = 0.3
+    ax[0].set_xlim(-rnge,rnge)
+    ax[0].set_ylim(-rnge,rnge)
+    ax[1].set_xlim(-rnge,rnge)
+    ax[1].set_ylim(-rnge,rnge)
 
     plt.show()
 
 
-def plot_rays(x_grid,y_grid,interp_star):
+def plot_rays(x_grid,y_grid,interp_star,vmax=0.02):
     '''
     data validation step to show polar alignment
     '''
@@ -106,16 +135,23 @@ def plot_rays(x_grid,y_grid,interp_star):
         for j in range(len(interp_star[0])):
             #print(i)
             if i%10==0:
-                interp_box_temp[i,j] = 100
+                interp_box_temp[i,j] = 0.01
                 #print(i,j)
             else:
                 interp_box_temp[i,j] = interp_star[i,j]
 
-    plt.figure(figsize=(6,5))
-    plt.pcolormesh(x_grid,y_grid,interp_box_temp)
+    x_axis = x_grid*pix_size_arc.value-(cx*pix_size_arc.value)
+    y_axis = y_grid*pix_size_arc.value-(cy*pix_size_arc.value)  
 
-    plt.vlines(49,0,100,colors='red')
-    plt.hlines(49,0,100,colors='red')
+    plt.figure(figsize=(6,5))
+    plt.pcolormesh(x_axis,y_axis,interp_box_temp,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = v_max)
+    rnge = 0.3
+
+    plt.xlim(-rnge,rnge)
+    plt.ylim(-rnge,rnge)
+
+    plt.vlines(0,-10,10,colors='blue')
+    plt.hlines(0,-10,10,colors='blue')
 
     plt.title("Plotting Interpolated Rays")
     plt.colorbar()
