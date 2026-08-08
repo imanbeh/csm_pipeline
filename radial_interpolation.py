@@ -101,14 +101,10 @@ def ray_calculation(image, n_lines, n_pts):
 def plot_interp_grid(X,Y,image,x_vals,y_vals,interp_star):
 
     fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(8,4))
-<<<<<<< HEAD
     X_axis = X*pix_size_arc.value-(cx*pix_size_arc.value)
     Y_axis = Y*pix_size_arc.value-(cy*pix_size_arc.value)
     ax[0].pcolormesh(X_axis, Y_axis, image,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = v_max)
     # ax[0].pcolormesh(X, Y, image,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = 0.02)
-=======
-    ax[0].pcolormesh(X, Y, image)
->>>>>>> 9cc025e83ae2e31bb8ee023a129f6d55d4651a53
     ax[0].set_title("Original Image")
 
     x_axis = x_vals*pix_size_arc.value-(cx*pix_size_arc.value)
