@@ -122,7 +122,7 @@ def plot_interp_grid(X,Y,image,x_vals,y_vals,interp_star):
     plt.show()
 
 
-def plot_rays(x_grid,y_grid,interp_star,vmax=0.02):
+def plot_rays(x_grid,y_grid,interp_star,vmax=v_max,shift=True):
     '''
     data validation step to show polar alignment
     '''
@@ -140,11 +140,16 @@ def plot_rays(x_grid,y_grid,interp_star,vmax=0.02):
             else:
                 interp_box_temp[i,j] = interp_star[i,j]
 
-    x_axis = x_grid*pix_size_arc.value-(cx*pix_size_arc.value)
-    y_axis = y_grid*pix_size_arc.value-(cy*pix_size_arc.value)  
-
     plt.figure(figsize=(6,5))
-    plt.pcolormesh(x_axis,y_axis,interp_box_temp,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = v_max)
+
+    if shift==True:
+        x_axis = x_grid*pix_size_arc.value-(cx*pix_size_arc.value)
+        y_axis = y_grid*pix_size_arc.value-(cy*pix_size_arc.value) 
+
+        plt.pcolormesh(x_axis,y_axis,interp_box_temp,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = vmax) 
+    else:
+        plt.pcolormesh(x_grid,y_grid,interp_box_temp,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = vmax)
+
     rnge = 0.3
 
     plt.xlim(-rnge,rnge)
