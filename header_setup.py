@@ -24,6 +24,11 @@ def read(hdu):
     beam_solid_angle_arc2 = beam_solid_angle.to(u.arcsec**2).value
     pix_per_beam = beam_solid_angle / (pix_size[0]*pix_size[1])
 
+#         ## TRYING TO NORMALIZE EARLY
+#     print(data_jy_beam.shape)
+#     data_jy_beam = ((data_jy_beam - data_jy_beam.min()) / (data_jy_beam.max() - data_jy_beam.min()))*data_jy_beam.max()
+#     print(np.nanmin(data_jy_beam),np.nanmax(data_jy_beam))
+
     data_jy_pix = data_jy_beam / pix_per_beam
     data_jy_arc2 = (data_jy_pix / beam_solid_angle_arc2)
     #data_jy_arc2 = data_jy_pix * (pix_size_arcsec**2).value
