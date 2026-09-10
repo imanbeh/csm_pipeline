@@ -8,7 +8,9 @@ from radial import sm
 lines = 201
 points = 100
 
-def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,csm =False,rnge=0.3):
+
+
+def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,csm =False,rnge=0.3,return_grids=False):
     '''
     filename: as csv
     pix_size_arcsec as unit object in arcsec
@@ -48,13 +50,18 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
 
     plot_rays(x_grid,y_grid,interp_data,vmax=vmax_gcm2)
 
+
     xaxis = x_grid*pix_size_arcsec.value-(center_x*pix_size_arcsec.value)
     yaxis = y_grid*pix_size_arcsec.value-(center_y*pix_size_arcsec.value)
 
     radius_2d_arc,radius_2d_pc,data_abel = start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge)
 
+    if return_grids==True:
+        return xaxis,yaxis,interp_data,radius_2d_arc,radius_2d_pc,data_abel
 
     return radius_2d_arc,radius_2d_pc,data_abel
+
+
 def start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge):
         '''
         sends interpolated data to IAT function.
@@ -153,3 +160,6 @@ def do_abel_2(F_arr,s,med):
 
 
     return f_r, dF_ds
+
+def get_grids():
+     return x_grid_glo,y_grid_glo
