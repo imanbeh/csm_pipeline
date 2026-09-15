@@ -174,7 +174,7 @@ color = cm.cool(np.linspace(0, 1, 22))
 mdotexp = [-8,-7,-6,-5]# msun/yr
 v_yr = (1e6*u.cm/u.s).to(u.cm/u.yr)
 
-def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None):
+def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None,save=False,no_rays=False):
     '''
     data validation step to show polar alignment
     '''
@@ -185,23 +185,25 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
     # making rays for reference
     count = 0
     prev_i=0
-    for i in range(len(interp_star)):
-        #for j in range(len(interp_star[0])):
-            #print(i)
-        if i%10==0:
-            if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
-                plt.plot(x_grid[i,],y_grid[i,],color = color[count])
 
-                ## get start and end psis
-                if count==line_a:
-                    psi_a = 2*np.round(i/201,2)
-                elif count==line_b:
-                    psi_b = 2*np.round(i/201,2)
+    if no_rays==False:
+        for i in range(len(interp_star)):
+            #for j in range(len(interp_star[0])):
+                #print(i)
+            if i%10==0:
+                if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
+                    plt.plot(x_grid[i,],y_grid[i,],color = color[count])
 
-            count+=1
-            #print(i,j)
-            prev_i=i
-    
+                    ## get start and end psis
+                    if count==line_a:
+                        psi_a = 2*np.round(i/201,2)
+                    elif count==line_b:
+                        psi_b = 2*np.round(i/201,2)
+
+                count+=1
+                #print(i,j)
+                prev_i=i
+
 
     plt.pcolormesh(x_grid,y_grid,interp_star,cmap='gist_heat',shading="gouraud",#, vmin = 3e-21, vmax = vmax)
                 norm=colors.LogNorm(vmin=3e-21, vmax=interp_star.max()))
@@ -210,17 +212,27 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
 
     plt.xlim(-rnge,rnge)
     plt.ylim(-rnge,rnge)
+    plt.xlabel('Radius (arc)')
+    plt.ylabel('Radius (arc)')
 
-    # plt.vlines(0,-10,10,colors='blue')
+    # plt.vlines(0,-10,10,colors='blue') 
     # plt.hlines(0,-10,10,colors='blue')
     if title is None:
-        plt.title(f"Betelgeuse CSM density with rays from {psi_a}{"\u03C0"} to {psi_b}{"\u03C0"}")
+        plt.title(f"Betelgeuse CSM density with rays from {psi_a}{"\u03C0"} to {psi_b}{"\u03C0"}",y=1.05)
     else:
         plt.title(title)
+        
     plt.colorbar(extend = 'min')
 
+    if save==True and title==False:
+        filename = f"thesis/csm_abel_plots/csm_abel_image_rays_{psi_a}_{psi_b}pi.png"
+        plt.savefig(filename)
+    elif save==True and no_rays==True:
+        filename = f"thesis/csm_abel_plots/csm_abel_image_no_rays.png"
+        plt.savefig(filename)
 
-def plot_single_rays(radius, data, line_a, line_b):    
+
+def plot_single_rays(radius, data, line_a, line_b,save=False):    
 
     num_plots = line_b-line_a+1
     fig, axes = plt.subplots(num_plots, 1, figsize=(5, num_plots*(4/3)), sharex=True)
@@ -240,10 +252,15 @@ def plot_single_rays(radius, data, line_a, line_b):
         if i%10==0:
             if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
                 line_index=count-line_a
-                ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/201,2)} pi")
+                ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/201,2)}{"\u03C0"}")
                 ax[line_index].legend(loc='lower left')
                 ax[line_index].set_ylim(10**-20,10**-15)
                 ax[line_index].set_xlim(1*10**-1,.4)
+
+                if count==line_a:
+                    psi_a = 2*np.round(i/201,2)
+                elif count==line_b:
+                    psi_b = 2*np.round(i/201,2)
 
                 
                 for mdot in mdotexp:
@@ -255,19 +272,23 @@ def plot_single_rays(radius, data, line_a, line_b):
                     if i == 0:
                         ax[line_index].text(xtext,ytext, f'$10^{{{mdot}}}$'+r' $M_\odot yr^{-1}$', fontsize=9, 
                             rotation=-3, alpha = 0.6)
+                        ax[line_index].set_ylabel(r'Density g cm$^{-3}$')
 
                 ax[line_index].semilogy()
                 ax[line_index].semilogx()
 
-                
 
                 prev_i=i
             count+=1
     ax[line_index].set_xlabel("Radius (arcsec)")
 
-def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19):
+    if save==True:
+            filename = f"thesis/csm_abel_plots/csm_abel_single_rays_{psi_a}_{psi_b}pi.png"
+            plt.savefig(filename)
+
+def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None):
     '''
     produce both the image and single rays plots
     '''
-    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b)
-    plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b)
+    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,)
+    plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b,save=save_plots)
