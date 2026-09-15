@@ -4,6 +4,10 @@ import csv
 from matplotlib import pyplot as plt
 from radial_interpolation import *
 from radial import sm
+from matplotlib.pyplot import cm
+import matplotlib.colors as colors
+
+
 
 lines = 201
 points = 100
@@ -163,3 +167,107 @@ def do_abel_2(F_arr,s,med):
 
 def get_grids():
      return x_grid_glo,y_grid_glo
+
+
+## making plots for csm
+color = cm.cool(np.linspace(0, 1, 22))
+mdotexp = [-8,-7,-6,-5]# msun/yr
+v_yr = (1e6*u.cm/u.s).to(u.cm/u.yr)
+
+def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None):
+    '''
+    data validation step to show polar alignment
+    '''
+    # making temp dataset to add rays of a different value
+    # this will plot as radial lines
+    interp_box_temp = np.zeros((len(interp_star),len(interp_star[0])))
+    plt.figure(figsize=(6,5))
+    # making rays for reference
+    count = 0
+    prev_i=0
+    for i in range(len(interp_star)):
+        #for j in range(len(interp_star[0])):
+            #print(i)
+        if i%10==0:
+            if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
+                plt.plot(x_grid[i,],y_grid[i,],color = color[count])
+
+                ## get start and end psis
+                if count==line_a:
+                    psi_a = 2*np.round(i/201,2)
+                elif count==line_b:
+                    psi_b = 2*np.round(i/201,2)
+
+            count+=1
+            #print(i,j)
+            prev_i=i
+    
+
+    plt.pcolormesh(x_grid,y_grid,interp_star,cmap='gist_heat',shading="gouraud",#, vmin = 3e-21, vmax = vmax)
+                norm=colors.LogNorm(vmin=3e-21, vmax=interp_star.max()))
+
+    rnge = 0.3
+
+    plt.xlim(-rnge,rnge)
+    plt.ylim(-rnge,rnge)
+
+    # plt.vlines(0,-10,10,colors='blue')
+    # plt.hlines(0,-10,10,colors='blue')
+    if title is None:
+        plt.title(f"Betelgeuse CSM density with rays from {psi_a}{"\u03C0"} to {psi_b}{"\u03C0"}")
+    else:
+        plt.title(title)
+    plt.colorbar(extend = 'min')
+
+
+def plot_single_rays(radius, data, line_a, line_b):    
+
+    num_plots = line_b-line_a+1
+    fig, axes = plt.subplots(num_plots, 1, figsize=(5, num_plots*(4/3)), sharex=True)
+    ax = axes.ravel()
+    fig.suptitle("Inverse Abel Transform for CSM Rays", y= 0.99)
+    fig.tight_layout()
+    fig.subplots_adjust(hspace=0)
+
+    x_range = np.linspace(1*10**-1,1.1)*u.arcsec
+    x_range_pc = sm(168,x_range).value*u.pc
+
+    prev_i=0
+    count=0
+   
+    for i in range(radius.shape[0]):
+        #plt.plot(radius_2d_arc[i,], csm_abel[i,])
+        if i%10==0:
+            if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
+                line_index=count-line_a
+                ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/201,2)} pi")
+                ax[line_index].legend(loc='lower left')
+                ax[line_index].set_ylim(10**-20,10**-15)
+                ax[line_index].set_xlim(1*10**-1,.4)
+
+                
+                for mdot in mdotexp:
+                    rho_mdot = 10**mdot*u.M_sun/u.yr / (4*np.pi*x_range_pc.to(u.cm)**2*v_yr)
+                    xtext = x_range[10]
+                    ytext = rho_mdot[35].to(u.g/u.cm**3)+rho_mdot[1].to(u.g/u.cm**3)/10
+                    ax[line_index].plot(x_range, rho_mdot.to(u.g/u.cm**3).value, ls  = '-.',alpha = 0.6, c='grey')
+
+                    if i == 0:
+                        ax[line_index].text(xtext,ytext, f'$10^{{{mdot}}}$'+r' $M_\odot yr^{-1}$', fontsize=9, 
+                            rotation=-3, alpha = 0.6)
+
+                ax[line_index].semilogy()
+                ax[line_index].semilogx()
+
+                
+
+                prev_i=i
+            count+=1
+    ax[line_index].set_xlabel("Radius (arcsec)")
+
+def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19):
+    '''
+    produce both the image and single rays plots
+    '''
+    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b)
+    plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b)
