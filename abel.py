@@ -20,7 +20,7 @@ def all_abel(data,rad,info):
 
 
 
-def do_abel(F,s,med):
+def do_abel(F,s,med, nans= True):
     '''
     F = radial profile of surface density
     s = radii corresponding with radial profile
@@ -28,8 +28,9 @@ def do_abel(F,s,med):
     '''
     F[F<0] = med/10#1e-30
     dF_ds = np.gradient(F,s)
-    dF_ds = dF_ds[~np.isnan(dF_ds)] #this likely only works for this data bc it 
-    s = s[:len(dF_ds)] # only cuts off nans if theyre all at the end of image
+    if(nans == True):
+        dF_ds = dF_ds[~np.isnan(dF_ds)] #this likely only works for this data bc it 
+        s = s[:len(dF_ds)] # only cuts off nans if theyre all at the end of image
     f_r = np.zeros(len(s))
     r_arr = np.zeros(len(s))
 
@@ -37,7 +38,7 @@ def do_abel(F,s,med):
         r = (s[i]+s[i+1])/2
         r_arr[i] = r
 
-        integ = np.trapezoid(dF_ds[i+1:]/ np.sqrt(s[s>r]**2-r**2),s[s>r])
+        integ = np.trapz(dF_ds[i+1:]/ np.sqrt(s[s>r]**2-r**2),s[s>r])
 
         f_r[i]= (-1/np.pi)* integ # integrate from r to highest radial value
 
