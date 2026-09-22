@@ -9,12 +9,13 @@ import matplotlib.colors as colors
 
 
 
-lines = 201
-points = 100
+default_lines = 201
+default_points = 100
 
 
 
-def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,csm =False,rnge=0.3,return_grids=False):
+def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,
+                         nlines = default_lines, npoints = default_points, csm =False,rnge=0.3,return_grids=False):
     '''
     filename: as csv
     pix_size_arcsec as unit object in arcsec
@@ -32,14 +33,14 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
 
     density_2d[np.isnan(density_2d)] = 0 # set nans equal to zero
 
-    if csm == True:
-        # get ready to crop out all of the nan vals
-        a=440
-        b=560
-        print(density_2d[a:b,a:b].shape[0])
-        #moving center for cropped image
-        center_x,center_y = (int(density_2d[a:b,a:b].shape[0]/2-1),int(density_2d[a:b,a:b].shape[0]/2-1))
-        density_2d = density_2d[a:b,a:b]
+    # if csm == True:
+    #     # get ready to crop out all of the nan vals
+    #     a=440
+    #     b=560
+    #     print(density_2d[a:b,a:b].shape[0])
+    #     #moving center for cropped image
+    #     center_x,center_y = (int(density_2d[a:b,a:b].shape[0]/2-1),int(density_2d[a:b,a:b].shape[0]/2-1))
+    #     density_2d = density_2d[a:b,a:b]
 
     figure,ax = plt.subplots(nrows = 1, ncols=1, figsize = (5,4))#, subplot_kw={'projection': wcs})
     figure.suptitle("Image Square", fontsize = 18, y=1.01)
@@ -50,9 +51,9 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
     ax.set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
 
     x_grid,y_grid,interp_data = radial_interp(density_2d, center_x,center_y,
-                    n_lines = lines, n_pts = points, pix_arc = pix_size_arcsec,plot_bool=True,vmax=vmax_gcm2)
+                    n_lines = nlines, n_pts = npoints, pix_arc = pix_size_arcsec,plot_bool=True,vmax=vmax_gcm2)
 
-    plot_rays(x_grid,y_grid,interp_data,vmax=vmax_gcm2)
+    plot_rays_image(x_grid,y_grid,interp_data,vmax=vmax_gcm2,csm=csm) 
 
 
     xaxis = x_grid*pix_size_arcsec.value-(center_x*pix_size_arcsec.value)
@@ -66,13 +67,17 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
     return radius_2d_arc,radius_2d_pc,data_abel
 
 
-def start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge):
+
+
+def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge):
         '''
         sends interpolated data to IAT function.
         returns IAT data
         '''
         # abel transformation
         radius_2d_arc,radius_2d_pc = radius_2d_arrays(xaxis,yaxis)
+
+        interp_data = regularization(interp_data_original,radius_2d_arc)
 
         data_abel = []
         row = np.zeros(len(interp_data[0,:]))
@@ -119,7 +124,32 @@ def start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge):
 
         return radius_2d_arc,radius_2d_pc,data_abel
     
+def regularization(interp_data_original,radius_2d_arc):
+    interp_csm = np.zeros_like(interp_data_original)
+    i_a=0
+    i_b=0
+    i_c=0
+    csm_dense_bkg = 8.705564515074679e-05
+    radius_betel_arc = 0.295
 
+    for i in range(radius_2d_arc.shape[0]):
+        for j in range(radius_2d_arc.shape[1]): #set center to bkg value (can't divide by radius = 0)
+            if radius_2d_arc[i,j]==0:
+                interp_csm[i,j] = csm_dense_bkg*1e-3
+                i_a+=1
+            elif radius_2d_arc[i,j]<0.1 or interp_data_original[i,j]<=0: # setting up power law background distribution # radius_2d_arc[i,j]<0.1 or 
+                interp_csm[i,j] = 1e-3*csm_dense_bkg/((radius_betel_arc/radius_2d_arc[i,j])**2)
+                i_b+=1
+            else:
+                #do nothing if normsl point
+                interp_csm[i,j]=interp_data_original[i,j]
+                i_c+=1
+
+    print(i_a)
+    print(i_b)
+    print(i_c)
+
+    return interp_csm
 
 
     
@@ -170,11 +200,11 @@ def get_grids():
 
 
 ## making plots for csm
-color = cm.cool(np.linspace(0, 1, 22))
+color = cm.cool(np.linspace(0, 1, 23))
 mdotexp = [-8,-7,-6,-5]# msun/yr
 v_yr = (1e6*u.cm/u.s).to(u.cm/u.yr)
 
-def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None,save=False,no_rays=False):
+def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None,save=False,no_rays=False,csm=False):
     '''
     data validation step to show polar alignment
     '''
@@ -186,19 +216,37 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
     count = 0
     prev_i=0
 
+    print("line_b: ",line_b)
+
+    if csm==True:
+        breaker =70
+        n_lines = 1401
+        
+    else:
+        breaker=10
+        n_lines = 201
+
     if no_rays==False:
         for i in range(len(interp_star)):
             #for j in range(len(interp_star[0])):
                 #print(i)
-            if i%10==0:
+            if i%breaker==0:
                 if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
+                    print("i: ",i)
+                    print("count: ",count)
                     plt.plot(x_grid[i,],y_grid[i,],color = color[count])
 
                     ## get start and end psis
                     if count==line_a:
-                        psi_a = 2*np.round(i/201,2)
+                        psi_a = 2*np.round(i/n_lines,2)
+                        print("psi_a: ",psi_a)
                     elif count==line_b:
-                        psi_b = 2*np.round(i/201,2)
+                        psi_b = 2*np.round(i/n_lines,2)
+                        print("psi_b: ",psi_b)
+
+                    elif i==line_b and csm==True:
+                        psi_b = 2*np.round(i/n_lines,2)
+                        print("psi_b: ",psi_b)
 
                 count+=1
                 #print(i,j)
@@ -232,7 +280,7 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
         plt.savefig(filename)
 
 
-def plot_single_rays(radius, data, line_a, line_b,save=False):    
+def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False):    
 
     num_plots = line_b-line_a+1
     fig, axes = plt.subplots(num_plots, 1, figsize=(5, num_plots*(4/3)), sharex=True)
@@ -246,21 +294,31 @@ def plot_single_rays(radius, data, line_a, line_b,save=False):
 
     prev_i=0
     count=0
+
+    if csm==True:
+        breaker =70
+        n_lines = 1401
+    
+    else:
+        breaker=10
+        n_lines = 201
+
+    print(breaker)
    
     for i in range(radius.shape[0]):
         #plt.plot(radius_2d_arc[i,], csm_abel[i,])
-        if i%10==0:
+        if i%breaker==0:
             if (i!=prev_i or i==0) and count>=line_a and count<=line_b:
                 line_index=count-line_a
-                ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/201,2)}{"\u03C0"}")
+                ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/n_lines,2)}{"\u03C0"}")
                 ax[line_index].legend(loc='lower left')
                 ax[line_index].set_ylim(10**-20,10**-15)
                 ax[line_index].set_xlim(1*10**-1,.4)
 
                 if count==line_a:
-                    psi_a = 2*np.round(i/201,2)
+                    psi_a = 2*np.round(i/n_lines,2)
                 elif count==line_b:
-                    psi_b = 2*np.round(i/201,2)
+                    psi_b = 2*np.round(i/n_lines,2)
 
                 
                 for mdot in mdotexp:
@@ -286,9 +344,9 @@ def plot_single_rays(radius, data, line_a, line_b,save=False):
             filename = f"thesis/csm_abel_plots/csm_abel_single_rays_{psi_a}_{psi_b}pi.png"
             plt.savefig(filename)
 
-def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None):
+def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,csm=False):
     '''
     produce both the image and single rays plots
     '''
-    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,)
-    plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b,save=save_plots)
+    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,csm=csm)
+    plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b,save=save_plots,csm=csm)
