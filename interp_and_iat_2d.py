@@ -362,9 +362,9 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False):
             filename = f"thesis/csm_abel_plots/csm_abel_single_rays_{psi_a}_{psi_b}pi.png"
             plt.savefig(filename)
 
-def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,csm=False):
+def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,csm=False,rnge=0.3):
     '''
     produce both the image and single rays plots
     '''
-    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,csm=csm)
+    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,csm=csm,rnge=rnge)
     plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b,save=save_plots,csm=csm)
