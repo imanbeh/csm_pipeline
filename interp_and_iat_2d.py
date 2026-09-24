@@ -14,12 +14,13 @@ default_points = 100
 
 
 
-def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,
+def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,bkg=8.705564515074679e-05,
                          nlines = default_lines, npoints = default_points, csm =False,rnge=0.3,return_grids=False):
     '''
     filename: as csv
     pix_size_arcsec as unit object in arcsec
     csm: boolean. if csm, will need to be cropped for nan vals
+    bkg default value is 8.705564515074679e-05 for csm
 
     '''
     #read in data
@@ -53,13 +54,13 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
     x_grid,y_grid,interp_data = radial_interp(density_2d, center_x,center_y,
                     n_lines = nlines, n_pts = npoints, pix_arc = pix_size_arcsec,plot_bool=True,vmax=vmax_gcm2)
 
-    plot_rays_image(x_grid,y_grid,interp_data,vmax=vmax_gcm2,csm=csm) 
+    plot_rays(x_grid,y_grid,interp_data,vmax=vmax_gcm2) 
 
 
     xaxis = x_grid*pix_size_arcsec.value-(center_x*pix_size_arcsec.value)
     yaxis = y_grid*pix_size_arcsec.value-(center_y*pix_size_arcsec.value)
 
-    radius_2d_arc,radius_2d_pc,data_abel = start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge)
+    radius_2d_arc,radius_2d_pc,data_abel = start_abel(xaxis,yaxis,interp_data,vmax_gcm2,vmax_gcm3,rnge,csm)
 
     if return_grids==True:
         return xaxis,yaxis,interp_data,radius_2d_arc,radius_2d_pc,data_abel
@@ -69,7 +70,7 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
 
 
 
-def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge):
+def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge,bkg,csm=False):
         '''
         sends interpolated data to IAT function.
         returns IAT data
@@ -77,7 +78,7 @@ def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge):
         # abel transformation
         radius_2d_arc,radius_2d_pc = radius_2d_arrays(xaxis,yaxis)
 
-        interp_data = regularization(interp_data_original,radius_2d_arc)
+        interp_data = regularization(interp_data_original,radius_2d_arc,csm,bkg)
 
         data_abel = []
         row = np.zeros(len(interp_data[0,:]))
@@ -124,22 +125,39 @@ def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge):
 
         return radius_2d_arc,radius_2d_pc,data_abel
     
-def regularization(interp_data_original,radius_2d_arc):
+def regularization(interp_data_original,radius_2d_arc,bkg,csm=False):
     interp_csm = np.zeros_like(interp_data_original)
     i_a=0
     i_b=0
     i_c=0
-    csm_dense_bkg = 8.705564515074679e-05
+
+    
+    # hr_dense_bkg = 8.773863086349733e-07 #g / cm2
+    # reproj_dense_bkg = 1.493734508648048e-06 #g / cm2
+    # lr_dense_bkg = 6.603274608302551e-05 #g / cm2
+    # csm_dense_bkg = 8.705564515074679e-05 # g / cm2
+
+
+
+    # if csm==True:
+    #     bkg = csm_dense_bkg
+    # else:
+    #     bkg = 
+
     radius_betel_arc = 0.295
 
     for i in range(radius_2d_arc.shape[0]):
         for j in range(radius_2d_arc.shape[1]): #set center to bkg value (can't divide by radius = 0)
-            if radius_2d_arc[i,j]==0:
-                interp_csm[i,j] = csm_dense_bkg*1e-3
+            if radius_2d_arc[i,j]==0 and csm==True:
+                interp_csm[i,j] = bkg*1e-3
                 i_a+=1
-            elif radius_2d_arc[i,j]<0.1 or interp_data_original[i,j]<=0: # setting up power law background distribution # radius_2d_arc[i,j]<0.1 or 
-                interp_csm[i,j] = 1e-3*csm_dense_bkg/((radius_betel_arc/radius_2d_arc[i,j])**2)
+            elif interp_data_original[i,j]<=0: # setting up power law background distribution # radius_2d_arc[i,j]<0.1 or 
+                interp_csm[i,j] = 1e-3*bkg/((radius_betel_arc/radius_2d_arc[i,j])**2)
                 i_b+=1
+            elif  radius_2d_arc[i,j]<0.1 and csm==True:
+                interp_csm[i,j] = 1e-3*bkg/((radius_betel_arc/radius_2d_arc[i,j])**2)
+                i_b+=1
+            
             else:
                 #do nothing if normsl point
                 interp_csm[i,j]=interp_data_original[i,j]
@@ -204,7 +222,7 @@ color = cm.cool(np.linspace(0, 1, 23))
 mdotexp = [-8,-7,-6,-5]# msun/yr
 v_yr = (1e6*u.cm/u.s).to(u.cm/u.yr)
 
-def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None,save=False,no_rays=False,csm=False):
+def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, line_b=19, title = None,save=False,no_rays=False,csm=False,rnge = 0.3):
     '''
     data validation step to show polar alignment
     '''
@@ -254,9 +272,9 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
 
 
     plt.pcolormesh(x_grid,y_grid,interp_star,cmap='gist_heat',shading="gouraud",#, vmin = 3e-21, vmax = vmax)
-                norm=colors.LogNorm(vmin=3e-21, vmax=interp_star.max()))
+                norm=colors.LogNorm(vmin=3e-20, vmax=interp_star.max()))
 
-    rnge = 0.3
+    
 
     plt.xlim(-rnge,rnge)
     plt.ylim(-rnge,rnge)
