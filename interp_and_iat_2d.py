@@ -126,6 +126,11 @@ def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge,bkg,csm
         return radius_2d_arc,radius_2d_pc,data_abel
     
 def regularization(interp_data_original,radius_2d_arc,bkg,csm=False):
+    '''
+    interp_data_original: data in any units
+    radius_2d_arc: radius in arcsec
+    bkg: background median in same units as data
+    '''
     interp_csm = np.zeros_like(interp_data_original)
     i_a=0
     i_b=0
