@@ -13,6 +13,7 @@ from photutils.detection import DAOStarFinder
 from photutils.aperture import aperture_photometry, CircularAperture, CircularAnnulus
 from astropy import units as u
 
+
 r_betelgeuse = 29.50*1e-3*u.arcsec
 
 

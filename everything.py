@@ -54,7 +54,7 @@ def full_analysis(hr,lr):
         sig = 1 # for sigma_clipped_stats
         star_sig = 3 #for masking out star
 
-        info[title[i]]['cmap'] = cmr.flamingo
+        info[title[i]]['cmap'] = 'gist_heat'#cmr.flamingo
 
         # high and low resolution data
         if i<2:

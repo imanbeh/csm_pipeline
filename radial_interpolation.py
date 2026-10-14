@@ -119,6 +119,11 @@ def plot_interp_grid(X,Y,image,x_vals,y_vals,interp_star):
     ax[1].set_xlim(-rnge,rnge)
     ax[1].set_ylim(-rnge,rnge)
 
+    ax[0].set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+    ax[0].set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
+    ax[1].set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+    #ax[1].set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
+
     plt.show()
 
 

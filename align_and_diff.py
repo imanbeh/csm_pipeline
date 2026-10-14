@@ -6,6 +6,7 @@ adds rows instead of subtracting them
 import numpy as np
 from matplotlib import pyplot as plt
 from astropy import units as u
+from radial import radius2d
 
 
 def a_d(drhr, dlr,info_reproj,info_lr):
@@ -23,6 +24,7 @@ def a_d(drhr, dlr,info_reproj,info_lr):
     # print("dlr shape: ", dlr.shape)
     # print("drhr shape: ", drhr.shape)
 
+    
 
     a = [dlr.shape[0]]*np.abs(row_diff)
     b = [0]*np.abs(row_diff)
@@ -83,8 +85,20 @@ def a_d(drhr, dlr,info_reproj,info_lr):
     #has to be this way [][] for some reason
     pos=(int(pos1[0][0]),int(pos1[1][0]))
 
-    # convert new datasets to diff units
+    
+    info_temp = {'position': pos}
+    #making dlr_add radius array so we cut truncate drhr_add when it gets weird and negative
+    rad_lr_add_pix = radius2d(dlr_add,info_temp)
+    rad_lr_add_arc = rad_lr_add_pix*info_lr['pix_size_arcsec'].value
+
+    for i in range(rad_lr_add_arc.shape[0]):
+        for j in range(rad_lr_add_arc.shape[1]):
+            if rad_lr_add_arc[i,j]>0.2:
+                drhr_add[i,j] = 0
+
+    #subtract data
     csm_jy_pixel = dlr_add-drhr_add 
+    # convert new datasets to diff units
     csm_jy_arc = csm_jy_pixel/info_lr['beam_solid_angle'].to(u.arcsec**2).value
 
     data_lr_centered_add_jy_arc2 = dlr_add/info_lr['beam_solid_angle'].to(u.arcsec**2).value

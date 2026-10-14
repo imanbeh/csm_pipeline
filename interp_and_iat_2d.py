@@ -3,7 +3,7 @@ from astropy import units as u
 import csv
 from matplotlib import pyplot as plt
 from radial_interpolation import *
-from radial import sm
+from radial_regularization import sm
 from matplotlib.pyplot import cm
 import matplotlib.colors as colors
 
@@ -98,17 +98,17 @@ def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge,bkg,csm
         data_abel = np.array(data_abel)
 
         #plot results
-        fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(12,5))
+        fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(14,5))
 
         im0 = ax[0].pcolormesh(xaxis, yaxis, interp_data,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = vmax_gcm2)
 
         ax[0].set_xlim(-rnge,rnge)
         ax[0].set_ylim(-rnge,rnge)
-        ax[0].set_xlabel("Radius (arc)")
-        ax[0].set_ylabel("Radius (arc)")
+        ax[0].set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+        ax[0].set_ylabel(r'$\Delta$ DEC (arc)' , size = 10)
 
         ax[0].set_title("Surface Density Image")
-        fig.colorbar(im0,label = "Density in g/cm2")
+        fig.colorbar(im0,label = "Density in g/cm2",format='%.0e')
 
         ### abel image
         #im1 = ax[1].pcolormesh(xaxis[:,0:-c], yaxis[:,0:-c], csm_abel,cmap='gist_heat',shading="gouraud", vmin = 0, vmax = 2e-19)
@@ -116,12 +116,12 @@ def start_abel(xaxis,yaxis,interp_data_original,vmax_gcm2,vmax_gcm3,rnge,bkg,csm
 
         ax[1].set_xlim(-rnge,rnge)
         ax[1].set_ylim(-rnge,rnge)
-        ax[1].set_xlabel("Radius (arc)")
-        ax[1].set_ylabel("Radius (arc)")
+        ax[1].set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+        ax[1].set_ylabel(r'$\Delta$ DEC (arc)' , size = 10)
 
 
         ax[1].set_title("IA Transformed Image")
-        fig.colorbar(im1,label = "Density in g/cm3")
+        fig.colorbar(im1,label = "Density in g/cm3",format='%.0e')
 
         return radius_2d_arc,radius_2d_pc,data_abel
     
@@ -136,21 +136,8 @@ def regularization(interp_data_original,radius_2d_arc,bkg,csm=False):
     i_b=0
     i_c=0
 
-    
-    # hr_dense_bkg = 8.773863086349733e-07 #g / cm2
-    # reproj_dense_bkg = 1.493734508648048e-06 #g / cm2
-    # lr_dense_bkg = 6.603274608302551e-05 #g / cm2
-    # csm_dense_bkg = 8.705564515074679e-05 # g / cm2
-
-
-
-    # if csm==True:
-    #     bkg = csm_dense_bkg
-    # else:
-    #     bkg = 
-
     radius_betel_arc = 0.295
-
+ 
     for i in range(radius_2d_arc.shape[0]):
         for j in range(radius_2d_arc.shape[1]): #set center to bkg value (can't divide by radius = 0)
             if radius_2d_arc[i,j]==0 and csm==True:
@@ -162,15 +149,14 @@ def regularization(interp_data_original,radius_2d_arc,bkg,csm=False):
             elif  radius_2d_arc[i,j]<0.1 and csm==True:
                 interp_csm[i,j] = 1e-3*bkg/((radius_betel_arc/radius_2d_arc[i,j])**2)
                 i_b+=1
-            
             else:
                 #do nothing if normsl point
                 interp_csm[i,j]=interp_data_original[i,j]
                 i_c+=1
 
-    print(i_a)
-    print(i_b)
-    print(i_c)
+    # print(i_a)
+    # print(i_b)
+    # print(i_c)
 
     return interp_csm
 
@@ -283,8 +269,8 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
 
     plt.xlim(-rnge,rnge)
     plt.ylim(-rnge,rnge)
-    plt.xlabel('Radius (arc)')
-    plt.ylabel('Radius (arc)')
+    plt.ylabel(r'$\Delta$ RA (arc)' , size = 10)
+    plt.xlabel(r'$\Delta$ Dec (arc)' , size = 10)
 
     # plt.vlines(0,-10,10,colors='blue') 
     # plt.hlines(0,-10,10,colors='blue')
@@ -293,9 +279,9 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
     else:
         plt.title(title)
         
-    plt.colorbar(extend = 'min')
+    plt.colorbar(extend = 'min', label = r'Density in g cm$^{-3}')
 
-    if save==True and title==False:
+    if save==True and title is None:
         filename = f"thesis/csm_abel_plots/csm_abel_image_rays_{psi_a}_{psi_b}pi.png"
         plt.savefig(filename)
     elif save==True and no_rays==True:
@@ -303,7 +289,7 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
         plt.savefig(filename)
 
 
-def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False):    
+def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4):    
 
     num_plots = line_b-line_a+1
     fig, axes = plt.subplots(num_plots, 1, figsize=(5, num_plots*(4/3)), sharex=True)
@@ -336,7 +322,7 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False):
                 ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/n_lines,2)}{"\u03C0"}")
                 ax[line_index].legend(loc='lower left')
                 ax[line_index].set_ylim(10**-20,10**-15)
-                ax[line_index].set_xlim(1*10**-1,.4)
+                ax[line_index].set_xlim(1*10**-1,rnge)
 
                 if count==line_a:
                     psi_a = 2*np.round(i/n_lines,2)
@@ -357,7 +343,6 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False):
 
                 ax[line_index].semilogy()
                 ax[line_index].semilogx()
-
 
                 prev_i=i
             count+=1
