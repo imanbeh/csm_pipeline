@@ -279,7 +279,7 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
     else:
         plt.title(title)
         
-    plt.colorbar(extend = 'min', label = r'Density in g cm$^{-3}')
+    plt.colorbar(extend = 'min', label = r'Density in g cm$^{-3}$')
 
     if save==True and title is None:
         filename = f"thesis/csm_abel_plots/csm_abel_image_rays_{psi_a}_{psi_b}pi.png"
