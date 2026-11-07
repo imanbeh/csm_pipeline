@@ -336,7 +336,8 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4)
                     ytext = rho_mdot[35].to(u.g/u.cm**3)+rho_mdot[1].to(u.g/u.cm**3)/10
                     ax[line_index].plot(x_range, rho_mdot.to(u.g/u.cm**3).value, ls  = '-.',alpha = 0.6, c='grey')
 
-                    if i == 0:
+                    if line_index%6==0:
+                        print("i%6==0. i = ",line_index)
                         ax[line_index].text(xtext,ytext, f'$10^{{{mdot}}}$'+r' $M_\odot yr^{-1}$', fontsize=9, 
                             rotation=-3, alpha = 0.6)
                         ax[line_index].set_ylabel(r'Density g cm$^{-3}$')
