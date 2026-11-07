@@ -283,10 +283,10 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
 
     if save==True and title is None:
         filename = f"thesis/csm_abel_plots/csm_abel_image_rays_{psi_a}_{psi_b}pi.png"
-        plt.savefig(filename)
+        plt.savefig(filename,bbox_inches='tight')
     elif save==True and no_rays==True:
         filename = f"thesis/csm_abel_plots/csm_abel_image_no_rays.png"
-        plt.savefig(filename)
+        plt.savefig(filename,bbox_inches='tight')
 
 
 def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4):    
@@ -351,7 +351,7 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4)
 
     if save==True:
             filename = f"thesis/csm_abel_plots/csm_abel_single_rays_{psi_a}_{psi_b}pi.png"
-            plt.savefig(filename)
+            plt.savefig(filename,bbox_inches='tight')
 
 def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,csm=False,rnge=0.3):
     '''
