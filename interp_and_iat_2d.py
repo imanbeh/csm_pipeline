@@ -7,7 +7,7 @@ from radial_regularization import sm
 from matplotlib.pyplot import cm
 import matplotlib.colors as colors
 
-
+import matplotlib.ticker
 
 default_lines = 201
 default_points = 100
@@ -22,6 +22,11 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
     csm: boolean. if csm, will need to be cropped for nan vals
     bkg default value is 8.705564515074679e-05 for csm
 
+    
+    returns:
+    xaxis: x values in arcsec 
+    yaxis: y values in arcsec
+    
     '''
     #read in data
     density_2d_as_list = []
@@ -219,8 +224,9 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
     '''
     # making temp dataset to add rays of a different value
     # this will plot as radial lines
+    a=3
     interp_box_temp = np.zeros((len(interp_star),len(interp_star[0])))
-    plt.figure(figsize=(6,5))
+    plt.figure(figsize=(6*a,5*a))
     # making rays for reference
     count = 0
     prev_i=0
@@ -261,7 +267,9 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
                 #print(i,j)
                 prev_i=i
 
-
+    plt.tick_params(axis='both',which='both')
+    plt.tick_params(which='minor', length=10*2, width = 3)
+    plt.tick_params(which='major', length=10*2, width = 3)
     plt.pcolormesh(x_grid,y_grid,interp_star,cmap='gist_heat',shading="gouraud",#, vmin = 3e-21, vmax = vmax)
                 norm=colors.LogNorm(vmin=3e-20, vmax=interp_star.max()))
 
@@ -269,8 +277,8 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
 
     plt.xlim(-rnge,rnge)
     plt.ylim(-rnge,rnge)
-    plt.ylabel(r'$\Delta$ RA (arc)' , size = 10)
-    plt.xlabel(r'$\Delta$ Dec (arc)' , size = 10)
+    plt.ylabel(r'$\Delta$ RA (arc)' , size = 14*a)
+    plt.xlabel(r'$\Delta$ Dec (arc)' , size = 14*a)
 
     # plt.vlines(0,-10,10,colors='blue') 
     # plt.hlines(0,-10,10,colors='blue')
@@ -289,14 +297,17 @@ def plot_rays_image(x_grid,y_grid,interp_star,vmax=v_max,shift=True, line_a=0, l
         plt.savefig(filename,bbox_inches='tight')
 
 
-def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4):    
+def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4, 
+                     label_r = False, label_l = False, label_b = False, label_t = False,hs=0):    
+    
 
     num_plots = line_b-line_a+1
-    fig, axes = plt.subplots(num_plots, 1, figsize=(5, num_plots*(4/3)), sharex=True)
+    fig, axes = plt.subplots(num_plots, 1, figsize=(5*4, num_plots*(4/3)*4), sharex=True)
     ax = axes.ravel()
-    fig.suptitle("Inverse Abel Transform for CSM Rays", y= 0.99)
-    fig.tight_layout()
-    fig.subplots_adjust(hspace=0)
+    
+    fig.suptitle("Inverse Abel Transform for CSM Rays", y= 0.95)
+    #fig.tight_layout()
+    fig.subplots_adjust(hspace=hs)
 
     x_range = np.linspace(1*10**-1,1.1)*u.arcsec
     x_range_pc = sm(168,x_range).value*u.pc
@@ -312,7 +323,7 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4)
         breaker=10
         n_lines = 201
 
-    print(breaker)
+    #print(breaker)
    
     for i in range(radius.shape[0]):
         #plt.plot(radius_2d_arc[i,], csm_abel[i,])
@@ -322,7 +333,15 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4)
                 ax[line_index].fill_between(radius[i,],data[i,]+data[i,]*430,data[i,]+data[i,]*800,color = color[count],alpha=1,label = f"psi = {2*np.round(i/n_lines,2)}{"\u03C0"}")
                 ax[line_index].legend(loc='lower left')
                 ax[line_index].set_ylim(10**-20,10**-15)
-                ax[line_index].set_xlim(1*10**-1,rnge)
+                ax[line_index].set_xlim(0.1,rnge)
+                ax[line_index].tick_params(axis='both',which='both',direction='in', 
+                                           labelright = label_r, labelleft = label_l,labeltop = label_t, labelbottom = label_b)
+                
+                ax[line_index].yaxis.set_ticks_position('both')
+                ax[line_index].xaxis.set_ticks_position('both')
+                ax[line_index].tick_params(which='major', length=10*2, width = 3)
+                ax[line_index].tick_params(which='minor', length=10*2, width = 3)#, color='r')  
+
 
                 if count==line_a:
                     psi_a = 2*np.round(i/n_lines,2)
@@ -333,29 +352,44 @@ def plot_single_rays(radius, data, line_a, line_b,save=False,csm=False,rnge=0.4)
                 for mdot in mdotexp:
                     rho_mdot = 10**mdot*u.M_sun/u.yr / (4*np.pi*x_range_pc.to(u.cm)**2*v_yr)
                     xtext = x_range[10]
-                    ytext = rho_mdot[35].to(u.g/u.cm**3)+rho_mdot[1].to(u.g/u.cm**3)/10
-                    ax[line_index].plot(x_range, rho_mdot.to(u.g/u.cm**3).value, ls  = '-.',alpha = 0.6, c='grey')
+                    ytext = rho_mdot[35].to(u.g/u.cm**3)+rho_mdot[1].to(u.g/u.cm**3)/7
+                    ax[line_index].plot(x_range, rho_mdot.to(u.g/u.cm**3).value, ls  = (0,(12,2)),alpha = 0.6, c='darkgrey', linewidth=4)
 
-                    if line_index%6==0:
-                        print("i%6==0. i = ",line_index)
-                        ax[line_index].text(xtext,ytext, f'$10^{{{mdot}}}$'+r' $M_\odot yr^{-1}$', fontsize=9, 
-                            rotation=-3, alpha = 0.6)
-                        ax[line_index].set_ylabel(r'Density g cm$^{-3}$')
+                    #if line_index%6==0:
+                    if(label_r==True):
+                        ax[line_index].yaxis.set_label_position("right")
+                    plt.rcParams['font.family'] = 'serif'
+                    #print("i%6==0. i = ",line_index)
+                    ax[line_index].text(xtext,ytext, f'$10^{{{mdot}}}$'+r' $M_\odot yr^{-1}$', fontsize=32, #was 7
+                        rotation=-2, alpha = 0.6, font = 'serif')
+                    ax[line_index].set_ylabel(r'Density [g cm$^{-3}$]')#, loc = 'right')
+                    #ax[line_index].ticklabel_format(style='plain', useOffset=False, axis='x')
+                    
 
                 ax[line_index].semilogy()
                 ax[line_index].semilogx()
+                yticks = np.array([10**(-15), 10**(-16), 10**(-17), 10**(-18), 10**(-19)])
+                ax[line_index].set_yticks(yticks)
 
                 prev_i=i
             count+=1
     ax[line_index].set_xlabel("Radius (arcsec)")
+    ax[line_index].xaxis.set_minor_formatter(matplotlib.ticker.ScalarFormatter())
+    ax[line_index].xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    #ax[line_index].yaxis.set_minor_formatter(matplotlib.ticker.ScalarFormatter())
+    #ax[line_index].yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+
+
+    ax[line_index].ticklabel_format(axis = 'x',style ='plain', scilimits=(-5, 8))
 
     if save==True:
             filename = f"thesis/csm_abel_plots/csm_abel_single_rays_{psi_a}_{psi_b}pi.png"
             plt.savefig(filename,bbox_inches='tight')
 
-def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,csm=False,rnge=0.3):
+def plot_sections(x_grid_csm,y_grid_csm,radius_2d_arc_csm,csm_abel,vmax=2e-19,shift=True,line_a=0,line_b=19,save_plots=False,rays_img_title=None,
+                  csm=False,rnge=0.3, no_rays = False):
     '''
     produce both the image and single rays plots
     '''
-    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,csm=csm,rnge=rnge)
+    plot_rays_image(x_grid_csm,y_grid_csm,csm_abel,vmax=vmax,shift=True,line_a=line_a,line_b=line_b,save=save_plots, title=rays_img_title,csm=csm,rnge=rnge, no_rays=no_rays)
     plot_single_rays(radius_2d_arc_csm,csm_abel,line_a,line_b,save=save_plots,csm=csm)
