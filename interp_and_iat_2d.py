@@ -15,7 +15,8 @@ default_points = 100
 
 
 def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, vmax_gcm3,bkg=8.705564515074679e-05,
-                         nlines = default_lines, npoints = default_points, csm =False,rnge=0.3,return_grids=False):
+                         nlines = default_lines, npoints = default_points, csm =False,rnge=0.3,return_grids=False,
+                         plots = True):
     '''
     filename: as csv
     pix_size_arcsec as unit object in arcsec
@@ -48,18 +49,20 @@ def read_in_density_file(filename,pix_size_arcsec,center_x,center_y,vmax_gcm2, v
     #     center_x,center_y = (int(density_2d[a:b,a:b].shape[0]/2-1),int(density_2d[a:b,a:b].shape[0]/2-1))
     #     density_2d = density_2d[a:b,a:b]
 
-    figure,ax = plt.subplots(nrows = 1, ncols=1, figsize = (5,4))#, subplot_kw={'projection': wcs})
-    figure.suptitle("Image Square", fontsize = 18, y=1.01)
-    im = ax.pcolormesh(density_2d, cmap='gist_heat',shading="gouraud", vmin = 0, vmax = vmax_gcm2)
-    figure.colorbar(im,ax=ax, label=r'Jy arc$^{-2}$')
-    ax.plot(center_x,center_y,'x')
-    ax.set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
-    ax.set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
+    if plots ==True:
+        figure,ax = plt.subplots(nrows = 1, ncols=1, figsize = (5,4))#, subplot_kw={'projection': wcs})
+        figure.suptitle("Image Square", fontsize = 18, y=1.01)
+        im = ax.pcolormesh(density_2d, cmap='gist_heat',shading="gouraud", vmin = 0, vmax = vmax_gcm2)
+        figure.colorbar(im,ax=ax, label=r'Jy arc$^{-2}$')
+        ax.plot(center_x,center_y,'x')
+        ax.set_xlabel(r'$\Delta$ RA (arc)' , size = 10)
+        ax.set_ylabel(r'$\Delta$ Dec (arc)' , size = 10)
 
     x_grid,y_grid,interp_data = radial_interp(density_2d, center_x,center_y,
-                    n_lines = nlines, n_pts = npoints, pix_arc = pix_size_arcsec,plot_bool=True,vmax=vmax_gcm2)
+                    n_lines = nlines, n_pts = npoints, pix_arc = pix_size_arcsec,plot_bool=plots,vmax=vmax_gcm2)
 
-    plot_rays(x_grid,y_grid,interp_data,vmax=vmax_gcm2) 
+    if plots==True:
+        plot_rays(x_grid,y_grid,interp_data,vmax=vmax_gcm2) 
 
 
     xaxis = x_grid*pix_size_arcsec.value-(center_x*pix_size_arcsec.value)

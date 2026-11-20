@@ -31,6 +31,7 @@ def radial_interp(image, center_x,center_y, n_lines, n_pts,pix_arc, plot_bool,vm
     global cy
     global plot
     global v_max
+    global plot
 
     pix_size_arc = pix_arc
     cx=center_x
